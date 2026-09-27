@@ -4,6 +4,7 @@ import { rateLimit } from 'express-rate-limit';
 import path from 'node:path';
 import { requestSchema } from '../shared/schema';
 import { plan } from './planner';
+import { readAudio, transcribe } from './transcription';
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '128kb' }));
@@ -17,6 +18,18 @@ app.post('/api/plan', rateLimit({ windowMs: 60000, limit: 12, standardHeaders: '
     const { goal, state, incidentId } = parsed.data;
     const reply = await plan(state, goal, incidentId ?? null, { key: process.env.OPENAI_API_KEY, model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
     res.json(reply);
+});
+let transcribing = false;
+app.post('/api/transcribe', rateLimit({ windowMs: 60000, limit: 6, standardHeaders: 'draft-8', legacyHeaders: false }), express.raw({ type: 'application/octet-stream', limit: '2mb' }), async (req, res) => {
+    if (!Buffer.isBuffer(req.body)) { res.status(400).json({ error: 'Audio is required.' }); return; }
+    let audio: Float32Array;
+    try { audio = readAudio(req.body); }
+    catch (error) { res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid audio.' }); return; }
+    if (transcribing) { res.status(429).json({ error: 'Transcription is busy. Please try again shortly.' }); return; }
+    transcribing = true;
+    try { res.json({ text: await transcribe(audio) }); }
+    catch { res.status(503).json({ error: 'The local speech model could not load. The first use needs internet access to download the model. Please retry.' }); }
+    finally { transcribing = false; }
 });
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Unknown API route.' }));
 if (process.env.NODE_ENV !== 'production' && path.basename(process.argv[1] ?? '') === 'index.ts') {

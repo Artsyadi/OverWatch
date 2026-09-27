@@ -84,3 +84,11 @@ State belongs to a single browser profile. Role switching is a demo convenience,
 Inventory rules: reservation reduces available-to-promise; replenishment and picking move stock within the facility; only dispatch reduces on-hand. Loaded totes stay with their assigned robot if it fails. Missing stock blocks the whole order.
 
 Official integration references: [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs), [Replit Secrets](https://docs.replit.com/core-concepts/project-editor/app-setup/secrets), [Replit deployments](https://docs.replit.com/features/publishing/deployment-types).
+
+### Voice input in Needs attention
+
+Click the microphone, allow microphone access, speak an English instruction, then click the stop icon. The transcript appears in the existing reply field for review before sending. Recordings stop automatically after 30 seconds. This changes input only; the existing reply and recovery approval behavior is preserved.
+
+Audio is decoded to mono 16 kHz PCM in the browser and sent to this app's `/api/transcribe` endpoint. A quantized Whisper Tiny model runs on the computer hosting the app; no speech API key is required and audio is not uploaded to a third-party transcription service. The first transcription downloads the public model from Hugging Face into the Transformers.js cache, so initial setup needs internet access. Short English demo instructions work best. Silence, missing microphone permission, and model loading failures display an actionable message.
+
+If no text appears, use the microphone selector shown during recording or after an error to choose the built-in microphone. Quiet recordings are amplified before recognition; genuinely silent recordings are rejected. Echo cancellation and noise suppression are disabled to avoid filtering quiet speech. Transcripts appear directly in the reply field; no level meter or audio playback is shown.
