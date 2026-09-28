@@ -1,0 +1,121 @@
+{
+  "name": "Kitchen corridor pilot",
+  "nodes": [
+    {
+      "id": "RECEIVING",
+      "name": "Receiving",
+      "x": 20,
+      "y": 87
+    },
+    {
+      "id": "WEST",
+      "name": "West checkpoint",
+      "x": 35,
+      "y": 67
+    },
+    {
+      "id": "EAST",
+      "name": "East checkpoint",
+      "x": 65,
+      "y": 27
+    },
+    {
+      "id": "RACK_A",
+      "name": "Rack A",
+      "x": 50,
+      "y": 47
+    },
+    {
+      "id": "RACK_B",
+      "name": "Rack B",
+      "x": 80,
+      "y": 7
+    }
+  ],
+  "edges": [
+    {
+      "id": "receiving-west",
+      "a": "RECEIVING",
+      "b": "WEST",
+      "cost": 1
+    },
+    {
+      "id": "west-a",
+      "a": "WEST",
+      "b": "RACK_A",
+      "cost": 1
+    },
+    {
+      "id": "a-east",
+      "a": "RACK_A",
+      "b": "EAST",
+      "cost": 1
+    },
+    {
+      "id": "east-b",
+      "a": "EAST",
+      "b": "RACK_B",
+      "cost": 1
+    }
+  ],
+  "shelves": [
+    {
+      "id": "A-R1-S1",
+      "name": "Aisle A \u00b7 Rack 1 \u00b7 Shelf 1",
+      "node": "RACK_A",
+      "category": "dry",
+      "capacity": 12
+    },
+    {
+      "id": "A-R1-S2",
+      "name": "Aisle A \u00b7 Rack 1 \u00b7 Shelf 2",
+      "node": "RACK_A",
+      "category": "dry",
+      "capacity": 12
+    },
+    {
+      "id": "B-R1-S1",
+      "name": "Aisle B \u00b7 Rack 1 \u00b7 Shelf 1",
+      "node": "RACK_B",
+      "category": "beverage",
+      "capacity": 12
+    },
+    {
+      "id": "B-R1-S2",
+      "name": "Aisle B \u00b7 Rack 1 \u00b7 Shelf 2",
+      "node": "RACK_B",
+      "category": "canned",
+      "capacity": 12
+    }
+  ],
+  "products": [
+    {
+      "sku": "OWP-RICE",
+      "name": "Rice",
+      "category": "dry",
+      "preferred": "A-R1-S1",
+      "unit": "pack"
+    },
+    {
+      "sku": "OWP-OATS",
+      "name": "Oats",
+      "category": "dry",
+      "preferred": "A-R1-S2",
+      "unit": "pack"
+    },
+    {
+      "sku": "OWP-TEA",
+      "name": "Tea",
+      "category": "beverage",
+      "preferred": "B-R1-S1",
+      "unit": "box"
+    },
+    {
+      "sku": "OWP-BEANS",
+      "name": "Canned beans",
+      "category": "canned",
+      "preferred": "B-R1-S2",
+      "unit": "can"
+    }
+  ]
+}
